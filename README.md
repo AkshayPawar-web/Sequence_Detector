@@ -61,3 +61,26 @@ module sequence_detector(
         endcase
     end
 endmodule
+//testbench
+`timescale 1ns/1ps
+module sequence_detector_tb;
+    reg clk, reset, x;
+    wire z;
+
+    sequence_detector dut(clk, reset, x, z);
+
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;  // Clock with 10ns period
+    end
+
+    initial begin
+        reset = 1; x = 0;
+        #12 reset = 0;
+        #10 x = 1; #10 x = 1; #10 x = 1; // "111" -> detect
+        #10 x = 0;
+        #10 x = 1; #10 x = 1; #10 x = 1; // Again "111"
+        #20 $stop;
+    end
+endmodule
+
